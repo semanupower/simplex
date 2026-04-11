@@ -2,6 +2,68 @@ import numpy as np
 import re
 import random as rand
 
+
+#Noche de peliculas#
+#
+"problema con solución única"
+def generar_unica(n, m, intentos=100):
+    for _ in range(intentos):
+        A = np.random.randint(1, 10, (m, n))
+        b = np.random.randint(10, 50, m)
+        z = np.random.randint(1, 10, n)
+
+        res1 = simplex_solver(z, A, b)
+        if res1 is None:
+            continue
+
+        val1, _, _ = res1
+
+        # Perturbar función objetivo
+        z2 = z + np.random.uniform(0.1, 1, n)
+        res2 = simplex_solver(z2, A, b)
+
+        if res2 is None:
+            continue
+
+        val2, _, _ = res2
+
+        # Si cambia el óptimo → solución única
+        if abs(val1 - val2) > 1e-5:
+            return z, A, b
+
+    print("No se pudo generar problema con solución única.")
+    return None, None, None
+
+"problema sin solución"
+def generar_sin_solucion(n):
+
+    A = []
+    b = []
+
+    # x1 <= 5
+    fila1 = [0]*n
+    fila1[0] = 1
+    A.append(fila1)
+    b.append(5)
+
+    # x1 >= 10 → -x1 <= -10
+    fila2 = [0]*n
+    fila2[0] = -1
+    A.append(fila2)
+    b.append(-10)
+
+    # Restricciones extra aleatorias
+    for _ in range(n):
+        fila = np.random.randint(1, 10, n)
+        A.append(fila.tolist())
+        b.append(np.random.randint(5, 20))
+
+    z = np.random.randint(1, 10, n)
+
+    return np.array(z), np.array(A), np.array(b)
+#
+#Prueba#
+
 def valid_input(mensaje: str, caso: int) -> float | str:
     patron = r'[+-]?([0-9]*\.)?[0-9]+'
     patron2 = r"(^(?=.)(?:(?:[+-]?([+-]?([0-9]*\.)?[0-9]+)(?:\w)*)+)[<>]?=(?=.)(?:(?:[+-]?(([0-9]*\.)?[0-9]+)(?:\w)*)+)$)"

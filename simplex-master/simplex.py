@@ -91,14 +91,16 @@ def iniciar_latex(nombre_archivo):
 def añadir_problema_latex(z, A, b, contador, desc, nombre_archivo):
     n, m = len(z), len(b)
     with open(nombre_archivo, "a", encoding="utf-8") as f:
-        f.write(f"\\section*{{Problema {contador}: Tipo {desc.capitalize()}}}\n")
+        f.write(f"\\section*{{Problema {contador}: Tipo: {desc}}}\n")
         obj = " + ".join([f"{z[i]}x_{i+1}" for i in range(n)])
         f.write(f"Maximizar: $Z = {obj}$\n\n")
         f.write(r"Sujeto a:" + "\n")
         f.write(r"\begin{align*}" + "\n")
+        
         for i in range(m):
             rest = " + ".join([f"{A[i,j]}x_{j+1}" for j in range(n)])
             f.write(f"{rest} &\\leq {b[i]} \\\\\n")
+        
         vars = ", ".join([f"x_{i+1}" for i in range(n)])
         f.write(f"{vars} &\geq 0" + "\n")
         f.write(r"\end{align*}" + "\n")
@@ -116,7 +118,7 @@ if __name__ == '__main__':
     while True:
         print("\nMENU GENERADOR SIMPLEX")
         print("1. Generar problema con solucion unica")
-        print("2. Generar problema sin Solucion")
+        print("2. Generar problema sin solucion")
         print("3. Generar problema acotado")
         print("4. SALIR")
         
@@ -125,6 +127,7 @@ if __name__ == '__main__':
         if tipo == '4':
             finalizar_latex(archivo_pdf)
             print(f"\nSe ha generado '{archivo_pdf}'.")
+            #os.system(f'pdflatex {archivo_pdf}')
             check_call(['pdflatex', f'{archivo_pdf}'], stdout=DEVNULL, stderr=STDOUT)
             break
         
@@ -139,7 +142,7 @@ if __name__ == '__main__':
             desc = "unica"
         elif tipo == '2':
             z, A, b = generar_sin_solucion(n, m)
-            desc = "sin_solucion"
+            desc = "sin solucion"
         else:
             z, A, b = generar_acotada(n, m)
             desc = "acotada"

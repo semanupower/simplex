@@ -1,6 +1,7 @@
+from subprocess import DEVNULL, STDOUT, check_call
 import numpy as np
-import re
 import random as rand
+import os
 
 def generar_unica(n, m, intentos=100):
     for _ in range(intentos):
@@ -97,7 +98,7 @@ def añadir_problema_latex(z, A, b, contador, desc, nombre_archivo):
         f.write(r"\begin{align*}" + "\n")
         for i in range(m):
             rest = " + ".join([f"{A[i,j]}x_{j+1}" for j in range(n)])
-            f.write(f"{rest} &\leq {b[i]} \\\\\n")
+            f.write(f"{rest} &\\leq {b[i]} \\\\\n")
         f.write(r"x_i &\geq 0" + "\n")
         f.write(r"\end{align*}" + "\n")
         f.write(r"\vspace{1cm}" + "\n") 
@@ -106,9 +107,11 @@ def finalizar_latex(nombre_archivo):
     with open(nombre_archivo, "a", encoding="utf-8") as f:
         f.write(r"\end{document}")
 
+def convertir_pdf(nombre_archivo):
+    ...
 
 if __name__ == '__main__':
-    archivo_pdf = "Problemas_simplex.tex"
+    archivo_pdf = "./Problemas_simplex.tex"
     iniciar_latex(archivo_pdf)
     contador_problemas = 1
     
@@ -124,6 +127,7 @@ if __name__ == '__main__':
         if tipo == '4':
             finalizar_latex(archivo_pdf)
             print(f"\nSe ha generado '{archivo_pdf}'.")
+            check_call(['pdflatex', f'{archivo_pdf}'], stdout=DEVNULL, stderr=STDOUT)
             break
         
         if tipo not in ['1', '2', '3']:

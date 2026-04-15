@@ -99,16 +99,14 @@ def añadir_problema_latex(z, A, b, contador, desc, nombre_archivo):
         for i in range(m):
             rest = " + ".join([f"{A[i,j]}x_{j+1}" for j in range(n)])
             f.write(f"{rest} &\\leq {b[i]} \\\\\n")
-        f.write(r"x_i &\geq 0" + "\n")
+        vars = ", ".join([f"x_{i+1}" for i in range(n)])
+        f.write(f"{vars} &\geq 0" + "\n")
         f.write(r"\end{align*}" + "\n")
         f.write(r"\vspace{1cm}" + "\n") 
 
 def finalizar_latex(nombre_archivo):
     with open(nombre_archivo, "a", encoding="utf-8") as f:
         f.write(r"\end{document}")
-
-def convertir_pdf(nombre_archivo):
-    ...
 
 if __name__ == '__main__':
     archivo_pdf = "./Problemas_simplex.tex"
